@@ -51,3 +51,17 @@ Raw CSV → data_cleaning.py → SQLite DB → SQL queries → summary_report.tx
 │   └── supply_dashboard.pbix
 └── README.md
 ```
+
+## 📸 Dashboard Preview
+
+### Executive Summary
+![Executive Summary](images/page1_executive_summary.png)
+
+### Delivery Performance
+![Delivery Performance](images/page2_delivery_performance.png)
+
+### Sales & Profitability
+![Sales & Profitability](images/page3_sales_profitability.png)
+
+### Demand Patterns
+![Demand Patterns](images/page4_demand_patterns.png)
