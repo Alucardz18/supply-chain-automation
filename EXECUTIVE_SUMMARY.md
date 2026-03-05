@@ -109,6 +109,3 @@ The unresolved question — what happened in October 2017 — is the single most
 investigation this business needs to complete before making any further growth commitments.
 
 ---
-
-*Analysis conducted using Python (pandas, SQLAlchemy), SQLite, and Power BI.
-Source: DataCo Smart Supply Chain Dataset — 180,519 orders across 50 variables.*
