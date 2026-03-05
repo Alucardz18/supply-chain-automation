@@ -1,0 +1,7 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+data/DataCoSupplyChainDataset.csv
+data/cleaned_supply_chain.csv
+data/cleaned_supply_chain.db
