@@ -121,7 +121,7 @@ def generate_report(results):
     
     print(f"Summary report saved to {REPORT}!")
     
-    # main function to run the entire pipeline
+# main function to run the entire pipeline
 def main():
     print("\n" + "="*60)
     print("SUPPLY CHAIN ANALYSIS PIPELINE STARTING ...")
@@ -141,4 +141,5 @@ def main():
     print("SUPPLY CHAIN ANALYSIS PIPELINE COMPLETED SUCCESSFULLY!")
     print("="*60)
     
-main()
+if __name__ == "__main__":
+    main()
