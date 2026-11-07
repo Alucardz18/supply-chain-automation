@@ -9,7 +9,7 @@ An automated pipeline that ingests raw supply chain data, cleans it, loads it in
 
 ## 🗂️ Dataset
 - **Source:** [DataCo Smart Supply Chain Dataset (Kaggle)](https://www.kaggle.com/datasets/shashwatwork/dataco-smart-supply-chain-for-big-data-analysis)
-- **Size:** 180,519 orders · 50+ columns
+- **Size:** 65,752 orders (180,519 order lines, one row per item) · 53 columns
 - **Period:** January 2015 – January 2018
 
 ## 🔧 Tech Stack
@@ -28,9 +28,9 @@ All steps run from a single script, `scripts/automation_pipeline.py`:
 Raw CSV → clean_data() → SQLite DB → run_analysis() → generate_report() → summary_report.txt
 ```
 
-1. **Clean:** drops unused and sensitive columns (including customer passwords), fills missing customer fields, and converts order and shipping dates to datetime
+1. **Clean:** drops unused and sensitive columns (customer passwords and emails), fills missing customer fields, and converts order and shipping dates to datetime
 2. **Load:** writes the cleaned data to a SQLite database with SQLAlchemy
-3. **Analyze:** runs 4 SQL queries (late delivery rate by shipping mode, revenue and profit by market, top 5 profitable categories, monthly order trends)
+3. **Analyze:** runs 4 SQL queries (late delivery rate by shipping mode, sales and profit by market, top 5 profitable categories, monthly orders and items sold). Orders are counted with `COUNT(DISTINCT "Order Id")`, since each row is one item in an order
 4. **Report:** saves the results to `data/summary_report.txt` with a timestamp
 
 ## 🚀 How to Run
@@ -41,11 +41,11 @@ Raw CSV → clean_data() → SQLite DB → run_analysis() → generate_report() 
 5. Check `data/summary_report.txt` for results
 
 ## 📈 Key Insights
-- **54.8%** of all orders are delivered late
-- **First Class** shipping has the worst delay rate at **95.3%**, worse than Standard Class (38.1%)
+- **54.8%** of orders are delivered late (57.3% if cancelled orders are left out)
+- **First Class** has the worst late rate at **95.3%**, compared with 38.1% for Standard Class. First Class is always scheduled for 1-day delivery, so almost any order that takes longer counts as late
 - **Europe** is the highest revenue market at **$10.9M**
-- **Fishing** is the most profitable category at **$756K**
-- Order volume dropped by more than half after **October 2017**
+- **Fishing** is the most profitable category at **$756K** (19% of all profit)
+- Starting in **October 2017**, orders contain about 1 item instead of several. The number of orders stayed about the same, but items sold and monthly revenue dropped sharply
 
 ## 📁 Structure
 ```

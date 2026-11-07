@@ -15,7 +15,7 @@ def clean_data(filepath):
     df = pd.read_csv(filepath, encoding='latin-1')
     
     # drop these columns
-    df = df.drop(columns=['Product Description', 'Order Zipcode', 'Customer Password'], errors='ignore')
+    df = df.drop(columns=['Product Description', 'Order Zipcode', 'Customer Password', 'Customer Email'], errors='ignore')
     
     # handle missing values
     df['Customer Lname'] = df['Customer Lname'].fillna("Unknown")
@@ -45,45 +45,57 @@ def load_to_database(df):
 def run_analysis(engine):
     print("Running analysis ...")
     
+    # late delivery rate by shipping mode (per order)
     query1 = """
-    SELECT "Shipping Mode", count(*) AS total_orders,
-    sum("Late_delivery_risk") AS late_deliveries,
-    round(sum("Late_delivery_risk") * 100.0 / count(*), 2) AS delivery_delay_rate
+    SELECT
+        "Shipping Mode",
+        count(DISTINCT "Order Id") AS total_orders,
+        count(DISTINCT CASE WHEN "Late_delivery_risk" = 1 THEN "Order Id" END) AS late_orders,
+        round(count(DISTINCT CASE WHEN "Late_delivery_risk" = 1 THEN "Order Id" END) * 100.0
+              / count(DISTINCT "Order Id"), 2) AS delivery_delay_rate
     FROM cleaned_supply_chain
     GROUP BY "Shipping Mode"
     ORDER BY delivery_delay_rate DESC
     """
 
+    # sales, profit, orders and order lines by market
     query2 = """
-    SELECT "Market",
-    round(sum("Sales"), 2) AS total_sales,
-    round(sum("Order Profit Per Order"), 2) AS total_profit,
-    count(*) AS total_orders
+    SELECT
+        "Market",
+        round(sum("Sales"), 2) AS total_sales,
+        round(sum("Order Profit Per Order"), 2) AS total_profit,
+        count(DISTINCT "Order Id") AS total_orders,
+        count(*) AS order_lines
     FROM cleaned_supply_chain
     GROUP BY "Market"
     ORDER BY total_sales DESC
     """
 
+    # top 5 categories by profit
     query3 = """
-    SELECT "Category Name",
-    round(sum("Order Profit Per Order"), 2) AS total_profit,
-    count(*) AS total_orders
+    SELECT
+        "Category Name",
+        round(sum("Order Profit Per Order"), 2) AS total_profit,
+        count(DISTINCT "Order Id") AS total_orders
     FROM cleaned_supply_chain
     GROUP BY "Category Name"
     ORDER BY total_profit DESC
     LIMIT 5
     """
 
+    # orders, items sold, sales and profit per month
     query4 = """
-    SELECT strftime('%Y-%m', "order date (DateOrders)") AS order_month,
-    count(*) AS total_orders,
-    round(sum("Sales"), 2) AS total_sales,
-    round(sum("Order Profit Per Order"), 2) AS total_profit
+    SELECT
+        strftime('%Y-%m', "order date (DateOrders)") AS order_month,
+        count(DISTINCT "Order Id") AS total_orders,
+        sum("Order Item Quantity") AS items_sold,
+        round(sum("Sales"), 2) AS total_sales,
+        round(sum("Order Profit Per Order"), 2) AS total_profit
     FROM cleaned_supply_chain
     GROUP BY order_month
-    ORDER BY order_month ASC
+    ORDER BY order_month
     """
-    
+
     results = {
         'delivery_delay_rate': pd.read_sql_query(query1, con=engine),
         'revenue_by_market': pd.read_sql_query(query2, con=engine),
