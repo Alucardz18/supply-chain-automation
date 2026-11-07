@@ -5,3 +5,5 @@ __pycache__/
 data/DataCoSupplyChainDataset.csv
 data/cleaned_supply_chain.csv
 data/cleaned_supply_chain.db
+# Original Power BI file (kept locally, replaced by Supply Chain Dashboard.pbix)
+dashboard/supply_dashboard.pbix

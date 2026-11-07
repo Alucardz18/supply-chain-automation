@@ -58,7 +58,7 @@ Raw CSV → clean_data() → SQLite DB → run_analysis() → generate_report() 
 ├── sql/
 │   └── queries.sql             ← analysis queries
 ├── dashboard/
-│   └── supply_dashboard.pbix   ← Power BI dashboard
+│   └── Supply Chain Dashboard.pbix  ← Power BI dashboard
 ├── images/                     ← dashboard screenshots
 ├── EXECUTIVE_SUMMARY.md        ← findings & recommendations
 └── README.md
